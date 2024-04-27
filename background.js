@@ -1,6 +1,6 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action == "processText") {
-      fetch('YOUR_LLM_API_ENDPOINT', {
+      fetch('http://127.0.0.1:5000/process_text', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
