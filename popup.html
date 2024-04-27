@@ -2,9 +2,22 @@
 <html>
 <head>
     <title>LLM Text Highlighter</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="togglebutton.js"></script>
+
+
 </head>
 <body>
-    <h1>LLM Text Highlighter</h1>
-    <p>Select text on any webpage and use the context menu to send it to the LLM.</p>
+    <div class="extension-box">
+        <h1 class="extension-title">LLM Text Highlighter</h1>
+        <p class = "extension-descripion">Select text on any webpage and use the context menu to send it to the LLM.</p>
+        <!-- <button class="switch" id="extension-toggle">Turn On Extension</button> -->
+
+        <label class="switch">
+            <input type="checkbox" id="extension-toggle">
+            <span class="slider round"></span>
+        </label>
+    </div>
+
 </body>
 </html>
