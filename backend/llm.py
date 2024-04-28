@@ -47,37 +47,44 @@ def get_response(text):
     fact = fact_check_claim(text)
     print("fact ", fact)
     if fact != "":
-        prompt = f"Here is a statement: {text}. We asked Google Fact Check API to verify our claim. Here's what it said: {fact}. Make a list of assumptions you made when given the above statement and classify it as true or fake news. If the news is fake, further classify it as misinformation, propaganda or misleading content as done by Google Fact Check API. Also you must assign a numerical rating to the claim on a scale of 1 to 5 where 1 means completely true and 5 means completely false. The format for assigning rating should be the following: \"Rating: <rating_value>\". You must only give a rating in the format described and in no other format."
+        prompt = f"Here is a statement: {text}. We asked Google Fact Check API to verify our claim. Here's what it said: {fact}. Make a list of assumptions you made when given the above statement and classify it as true or fake news. If the news is fake, further classify it as misinformation, propaganda or misleading content as done by Google Fact Check API. Also you must assign a numerical rating to the claim on a scale of 1 to 5 where 1 means completely true and 5 means completely false. The format for assigning rating should be the following: \"Rating: <rating_value>\"."
+        #prompt2 = f"Extract and return the integer rating from the following text: {prompt} "
+        #prompt2 = f"Here is a piece of text: {prompt} Extract the rating being assigned and give it as your response. Note: you must only return the rating as your reponse and no other character value."
     else:
         #prompt = f"Here is a statement: {text}. Make a list of assumptions you made when given the above statement and classify it as true or fake news. If the news is fake, further classify it as misinformation, propaganda or misleading content as done by Google Fact Check API. Also assign a numerical rating to the claim on a scale of 1 to 5 where 1 means completely true and 5 means completely false. The format for assigning rating should be the following: \"Rating: <rating_value>\"'
-        prompt = prompt = f"Here is a statement: {text}. Make a list of assumptions you made when given the above statement and classify it as true or fake news. If the news is fake, further classify it as misinformation, propaganda or misleading content as done by Google Fact Check API. Also assign a numerical rating to the claim on a scale of 1 to 5 where 1 means completely true and 5 means completely false. The format for assigning rating should be the following: \"Rating: <rating_value>\". You must only give a rating in the format described and in no other format."
-    x = agent.invoke(prompt)
-    print(x)
+        prompt = prompt = f"Here is a statement: {text}. Make a list of assumptions you made when given the above statement and classify it as true or fake news. If the news is fake, further classify it as misinformation, propaganda or misleading content as done by Google Fact Check API. Also assign a numerical rating to the claim on a scale of 1 to 5 where 1 means completely true and 5 means completely false. The format for assigning rating should be the following: \"Rating: <rating_value>\"."
+        #prompt2 = f"Extract and return the integer rating from the following text: {prompt} "
+
     
     # removing tokens
     def remove_after(text, delimiter):
         return text.split(delimiter)[0].strip()
 
-    cleaned_data = remove_after(x['output'], '<|eot_id|>')
+    
     
     # removing special characters
     def clean_text(text):
         text = text.replace('\\n', ' ').replace('\\', '')
         text = re.sub(r'\s+', ' ', text)
         return text.strip()
-
+    
+    x = agent.invoke(prompt)
+    print(x)
+    cleaned_data = remove_after(x['output'], '<|eot_id|>')
     cleaned_data = clean_text(cleaned_data)
     
-    def extract_rating(sentence):
-    # Define the pattern to match "Rating: " followed by a single character
-        pattern = r'Rating:\s*(\S)'
-        match = re.search(pattern, sentence)
-        if match:
-            return match.group(1)
-        else:
-            return None
-    
-    rating = extract_rating(cleaned_data)
-    
+
+    #rating = extract_rating(cleaned_data)
+    prompt2 = f"Extract and return the only integer rating (no other character) from the following text: {cleaned_data} "
+    rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
     return cleaned_data,rating
-    # return x['output']
+ 
+    # def extract_rating(sentence):
+    # # Define the pattern to match "Rating: " followed by a single character
+    #     pattern = r'Rating:\s*(\S)'
+    #     match = re.search(pattern, sentence)
+    #     if match:
+    #         return match.group(1)
+    #     else:
+    #         return None
+    
