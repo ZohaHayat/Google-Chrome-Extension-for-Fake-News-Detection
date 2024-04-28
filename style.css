@@ -33,7 +33,13 @@
 .extension-button:hover {
     background-color: #0056b3;
 } */
-
+.popup {
+  width: 300px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+}
 /* The switch - the box around the slider */
 .switch {
     position: relative;

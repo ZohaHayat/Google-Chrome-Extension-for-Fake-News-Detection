@@ -33,6 +33,15 @@
 //     //     }
 //     // }
 // });
+// Listen for messages from the background script
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    // Check if the message contains processed text
+    if (message.processedText) {
+        // Update the content of the processedText element with the processed text answer
+        document.getElementById('processedText').textContent = "Processed Text: " + message.processedText;
+    }
+});
+
 
 
 document.addEventListener("DOMContentLoaded", function () {
