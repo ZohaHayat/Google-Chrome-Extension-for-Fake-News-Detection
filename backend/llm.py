@@ -76,7 +76,12 @@ def get_response(text):
 
     #rating = extract_rating(cleaned_data)
     prompt2 = f"Extract and return the only integer rating (no other character) from the following text: {cleaned_data} "
+    
     rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
+    while (rating==None):
+        rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
+        
+        
     
     return cleaned_data + "." + rating + "."
     # return cleaned_data,rating
