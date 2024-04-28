@@ -47,9 +47,10 @@ def get_response(text):
     fact = fact_check_claim(text)
     print("fact ", fact)
     if fact != "":
-        prompt = f"Here is a statement: {text}. We asked Google Fact Check API to verify our claim. Here's what it said: {fact}. Make a list of assumptions you made when given the above statement and classify it as true or fake news. If the news is fake, further classify it as misinformation, propaganda or misleading content as done by Google Fact Check API. Also you must assign a numerical rating to the claim on a scale of 1 to 5 where 1 means completely true and 5 means completely false."
+        prompt = f"Here is a statement: {text}. We asked Google Fact Check API to verify our claim. Here's what it said: {fact}. Make a list of assumptions you made when given the above statement and classify it as true or fake news. If the news is fake, further classify it as misinformation, propaganda or misleading content as done by Google Fact Check API. Also you must assign a numerical rating to the claim on a scale of 1 to 5 where 1 means completely true and 5 means completely false. The format for assigning rating should be the following: \"Rating: <rating_value>\""
     else:
-        prompt = f"Here is a statement: {text}. Make a list of assumptions you made when given the above statement and classify it as true or fake news. If the news is fake, further classify it as misinformation, propaganda or misleading content as done by Google Fact Check API. Also assign a numerical rating to the claim on a scale of 1 to 5 where 1 means completely true and 5 means completely false."
+        #prompt = f"Here is a statement: {text}. Make a list of assumptions you made when given the above statement and classify it as true or fake news. If the news is fake, further classify it as misinformation, propaganda or misleading content as done by Google Fact Check API. Also assign a numerical rating to the claim on a scale of 1 to 5 where 1 means completely true and 5 means completely false. The format for assigning rating should be the following: \"Rating: <rating_value>\"'
+        prompt = prompt = f"Here is a statement: {text}. Make a list of assumptions you made when given the above statement and classify it as true or fake news. If the news is fake, further classify it as misinformation, propaganda or misleading content as done by Google Fact Check API. Also assign a numerical rating to the claim on a scale of 1 to 5 where 1 means completely true and 5 means completely false. The format for assigning rating should be the following: \"Rating: <rating_value>\""
     x = agent.invoke(prompt)
     print(x)
     
@@ -67,5 +68,16 @@ def get_response(text):
 
     cleaned_data = clean_text(cleaned_data)
     
-    return cleaned_data
+    def extract_rating(sentence):
+    # Define the pattern to match "Rating: " followed by a single character
+        pattern = r'Rating:\s*(\S)'
+        match = re.search(pattern, sentence)
+        if match:
+            return match.group(1)
+        else:
+            return None
+    
+    rating = extract_rating(cleaned_data)
+    
+    return cleaned_data,rating
     # return x['output']
