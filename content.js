@@ -91,6 +91,7 @@ function showLoadingPopup() {
     // Open a new popup window with the initial content
     var popupWindow = window.open('', 'popupWindow', 'width=' + popupWidth + ', height=' + popupHeight + ', left=' + popupLeft + ', top=' + popupTop);
 
+    popupWindow.document.open();
     // Write the initial content
     popupWindow.document.write(popupContent);
 
