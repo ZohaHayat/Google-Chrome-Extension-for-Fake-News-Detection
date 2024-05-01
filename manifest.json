@@ -3,10 +3,20 @@
     "name": "LLM Text Highlighter",
     "version": "1.0",
     "permissions": ["activeTab", "storage"],
+    "icons": {
+      "16": "images/icon_i.png",
+      "48": "images/icon_i.png",
+      "128": "images/icon_i.png"
+    },
     "background": {
       "service_worker": "background.js"
     },
     "action": {
+      "default_icon": {
+        "16": "images/icon_i.png",
+        "48": "images/icon_i.png",
+        "128": "images/icon_i.png"
+      },
       "default_popup": "popup.html"
     },
     "content_scripts": [
