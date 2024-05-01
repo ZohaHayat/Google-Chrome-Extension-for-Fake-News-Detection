@@ -98,6 +98,7 @@ import os
 from gfc import fact_check_claim
 import re
 import requests
+import time
 
 os.environ["FIREWORKS_API_KEY"] = "1yR1x6rnM2AfusPPmHLHGrw40xMujZZbVGj5vzGzGyx1VHAj"
 os.environ["SERPER_API_KEY"] = "71dec5a8911e77cf4b02622b06f25e2d3661f1f9"
@@ -125,10 +126,24 @@ def get_response(text):
 
     """
 
-    output = query({
-        "inputs": inputs,
-    "parameters": {"max_new_tokens": 150, "return_full_text": False},
-    })
+    # output = query({
+    #     "inputs": inputs,
+    # "parameters": {"max_new_tokens": 150, "return_full_text": False},
+    # })
+    
+    while True:
+        output = query({
+            "inputs": inputs,
+        "parameters": {"max_new_tokens": 150, "return_full_text": False},
+        })
+
+        if "error" in output:
+            print(output["error"])
+            print("Retrying in 2 seconds...")
+            time.sleep(2)  # Wait for 2 seconds before retrying
+        else:
+            print(output[0]['generated_text'])
+            break  # Exit the loop if successful
     
     x = output[0]['generated_text']
     
@@ -148,11 +163,20 @@ def get_response(text):
     <start_of_turn>model
 
     """
+    
+    while True:
+        output2 = query({
+            "inputs": inputs2,
+        "parameters": {"max_new_tokens": 150, "return_full_text": False},
+        })
 
-    output2 = query({
-        "inputs": inputs2,
-    "parameters": {"max_new_tokens": 150, "return_full_text": False},
-    })
+        if "error" in output2:
+            print(output2["error"])
+            print("Retrying in 2 seconds...")
+            time.sleep(2)  # Wait for 2 seconds before retrying
+        else:
+            print(output2[0]['generated_text'])
+            break  # Exit the loop if successful
     
     rating = output2[0]['generated_text']
     while (rating==None):
