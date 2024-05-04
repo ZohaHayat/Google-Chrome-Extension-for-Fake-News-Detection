@@ -3,6 +3,7 @@ from gfc import fact_check_claim
 import re
 import requests
 import time
+from langchain.tools import DuckDuckGoSearchRun
 
 os.environ["FIREWORKS_API_KEY"] = "1yR1x6rnM2AfusPPmHLHGrw40xMujZZbVGj5vzGzGyx1VHAj"
 os.environ["SERPER_API_KEY"] = "71dec5a8911e77cf4b02622b06f25e2d3661f1f9"
@@ -12,24 +13,28 @@ def get_response(text):
     API_URL = "https://api-inference.huggingface.co/models/SeemalT/gemma2b-finetuned"
     headers = {"Authorization": "Bearer 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"}
 
-
     def query(payload):
         response = requests.post(API_URL, headers=headers, json=payload)
         return response.json()
     
+    def get_duckduckgo_results(query):
+        ddg_search = DuckDuckGoSearchRun()  # Initialize the DuckDuckGo search class
+        results = ddg_search.run(query)  # Run the search with the provided query
+        return results
     
-  
+    search_result = get_duckduckgo_results(text)
+    combined_text = " ".join(search_result)
+    
     fact = fact_check_claim(text)
     if fact != "":
-        prompt = f"Here is a statement: {text}. We asked Google Fact Check API to verify our claim. We would like you to use its response as a supplementary resource in making your decision. Here's what it said: {fact}. Make a bullet point list of explanations you made when given the above statement and explain whether statement is true new or fake news. At the end you must assign a numerical rating to the claim on a scale of 0 to 5 where 0 means completely true and 5 means completely false. The format for assigning rating should be the following: Rating: <rating_value>."
+        prompt = f"Here is a statement: {text}. Classify the statement as true (give it a rating of 1) or false (give it a rating of 5) and provide factual explanations to prove your claim. Here is some supplementary information: {fact} & {combined_text}. The format for assigning rating should be the following: Rating: <rating_value>."
     else:
-        prompt = f"Here is a statement: {text}. Make a list of explanations you made when given the above statement and classify it as true or fake news. At the end assign a numerical rating to the claim on a scale of 0 to 5 where 0 means completely true and 5 means completely false. The format for assigning rating should be the following: Rating: <rating_value>."
+        prompt = f"Here is a statement: {text}. Classify the statement as true (give it a rating of 1) or false (give it a rating of 5) and provide factual explanations to prove your claim. Here is some supplementary information: {combined_text}. The format for assigning rating should be the following: Rating: <rating_value>."
 
     inputs = f"""<bos>
     <start_of_turn>user
     {prompt}<end_of_turn>
     <start_of_turn>model
-
     """
     
     while True:
@@ -62,7 +67,6 @@ def get_response(text):
     <start_of_turn>user
     {prompt2}<end_of_turn>
     <start_of_turn>model
-
     """
     
     while True:
@@ -82,7 +86,6 @@ def get_response(text):
     rating = output2[0]['generated_text']
     while (rating==None):
         rating = output2[0]['generated_text']
-    
     
     def extract_rating(sentence):
         pattern = r'\d+'
