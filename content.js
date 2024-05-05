@@ -23,24 +23,6 @@ function showPopupMessage(processedTex, rating, popupWindow) {
         } else {
             sectionColor = '#808080'; // Default to white or any other fallback color
         }
-        // if (rating === 1 && i == rating-1) {
-        //     sectionColor = '#006400'; // Dark green
-        //     rating = "Completely True"
-        // } else if (rating === 2 && i == rating-1) {
-        //     sectionColor = '#90EE90'; // Light green
-        //     rating = "Somewhat True"
-        // } else if (rating === 3 && i == rating-1) {
-        //     sectionColor = '#FFFF00'; // Yellow
-        //     rating = "Uncertain"
-        // } else if (rating === 4 && i == rating-1) {
-        //     sectionColor = '#FFA500'; // Orange
-        //     rating = "Somewhat False"
-        // } else if (rating === 5 && i == rating-1) {
-        //     rating = "Completely False"
-        //     sectionColor = '#FF0000'; // Red
-        // } else {
-        //     sectionColor = '#808080'; // Default to white or any other fallback color
-        // }
 
         popupContent += '<div style="flex: 1; background: ' + sectionColor + '; border-right: 1px solid white;"></div>';
     }
@@ -61,17 +43,6 @@ function showPopupMessage(processedTex, rating, popupWindow) {
 
     // Close HTML body and document
     popupContent += '</body></html>';
-
-    // // Calculate the position of the popup window to center it on the screen
-    // var popupWidth = 600; // Width of the popup window
-    // var popupHeight = 400; // Height of the popup window
-    // var screenWidth = window.screen.availWidth;
-    // var screenHeight = window.screen.availHeight;
-    // var popupLeft = (screenWidth - popupWidth) / 2;
-    // var popupTop = (screenHeight - popupHeight) / 2;
-
-    // // Open a new popup window with the formatted content
-    // var popupWindow = window.open('', 'popupWindow', 'width=' + popupWidth + ', height=' + popupHeight + ', left=' + popupLeft + ', top=' + popupTop);
 
     // // Write the HTML content to the popup window's document
     popupWindow.document.write(popupContent);
