@@ -1,6 +1,7 @@
 # GenAI-Group2
 
 ## Getting Started
+
 ### Prerequisites
   - Google Chrome Browser
   - Python (for backend functionality)
@@ -8,7 +9,8 @@
 ### Installation
   - Download the Repository:
   - Clone the repository to your local machine using the following command:
-    git clone https://github.com/yourusername/projectname.git
+    git clone https://github.com/aimashahid/GenAI-Group2.git
+    
 ### Chrome Extension Setup:
   - Open Google Chrome.
   - Navigate to chrome://extensions/.
@@ -19,9 +21,10 @@
   - Navigate to Backend Directory:
   - Open a terminal or command prompt.
   - Change directory to the backend folder within the downloaded repository:
-     cd path/to/projectname/backend
-  - Run the Python Script:
-  - Execute the following command to run the backend server in the background:
-    python app.py 
+     cd backend
+  - Run the Python Script
+    Execute the following command to run the backend server in the background:
+    python app.py
+    
   ### Usage
   Once the Chrome extension and backend server are set up and running, you can start using the extension in your browser. The extension will be active, and you can interact with it according to its functionality.
