@@ -4,13 +4,16 @@ import re
 import requests
 import time
 from langchain.tools import DuckDuckGoSearchRun
+from langchain.utilities import GoogleSerperAPIWrapper
 
 os.environ["FIREWORKS_API_KEY"] = "1yR1x6rnM2AfusPPmHLHGrw40xMujZZbVGj5vzGzGyx1VHAj"
 os.environ["SERPER_API_KEY"] = "71dec5a8911e77cf4b02622b06f25e2d3661f1f9"
 
+google_search = GoogleSerperAPIWrapper()
+
 def get_response(text):
     
-    API_URL = "https://api-inference.huggingface.co/models/SeemalT/gemma2b-finetuned"
+    API_URL = "https://api-inference.huggingface.co/models/SeemalT/gemma2b-finetuned-v2"
     headers = {"Authorization": "Bearer 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"}
 
     def query(payload):
@@ -22,14 +25,20 @@ def get_response(text):
         results = ddg_search.run(query)  # Run the search with the provided query
         return results
     
-    search_result = get_duckduckgo_results(text)
-    combined_text = " ".join(search_result)
+    def get_google_results(query):
+        results = google_search.run(query)  # Get results from Google Serper API
+        return results
     
+    google_results = get_google_results(text)
+    search_result = get_duckduckgo_results(text)
     fact = fact_check_claim(text)
-    if fact != "":
-        prompt = f"Here is a statement: {text}. Classify the statement as true (give it a rating of 1) or false (give it a rating of 5) and provide factual explanations to prove your claim. Here is some supplementary information: {fact} & {combined_text}. The format for assigning rating should be the following: Rating: <rating_value>."
-    else:
-        prompt = f"Here is a statement: {text}. Classify the statement as true (give it a rating of 1) or false (give it a rating of 5) and provide factual explanations to prove your claim. Here is some supplementary information: {combined_text}. The format for assigning rating should be the following: Rating: <rating_value>."
+    combined_text = " ".join(search_result + google_results + fact)
+    
+    # if fact != "":
+    # prompt = f"Here is a statement: {text}. Classify the statement as true or false and provide factual explanations to prove your claim. Give it a rating according to this: 0: Completely True, 1: Mostly True, 2: Somewhat True, 3: uncertain, 4: Somewhat False, 5: Mostly False, 6: Completely False. Here is some supplementary information: {fact} & {combined_text}. The format for assigning rating should be the following: Rating: <rating_value>."
+    prompt = f"Here is a statement: {text}. Classify the statement as Completely True (Rating: 1.) or Somewhat True (Rating: 2.) or unsure (Rating: 3.) or Somewhat False (Rating: 4.) or Completely False (Rating: 5.) and provide factual explanations to prove your claim. Here is some supplementary information: {combined_text}. The format for assigning rating should be the following: Rating: <rating_value>."
+    # else:
+        # prompt = f"Here is a statement: {text}. Classify the statement as true or false and provide factual explanations to prove your claim. Give it a rating according to this - 0: Completely True, 1: Mostly True, 2: Somewhat True, 3: uncertain, 4: Somewhat False, 5: Mostly False, 6: Completely False. Here is some supplementary information: {combined_text}. The format for assigning rating should be the following: Rating: <rating_value>."
 
     inputs = f"""<bos>
     <start_of_turn>user
@@ -61,7 +70,7 @@ def get_response(text):
     x = clean_text(x)
     print(x)
     
-    prompt2 = f"Only extract and return the rating number (this will be a number from 0 to 5) given to the text: {x}. Just give me the number as an answer and don't write an entire sentence."
+    prompt2 = f"Only extract and return the rating number given to the text: {x}. Just give me the number as an answer and don't write an entire sentence."
     
     inputs2 = f"""<bos>
     <start_of_turn>user
@@ -79,6 +88,14 @@ def get_response(text):
             print(output2["error"])
             print("Retrying in 2 seconds...")
             time.sleep(2)  # Wait for 2 seconds before retrying
+        elif output2[0]['generated_text'] == None:
+            print(output2[0]['generated_text'])
+            print("Retrying in 2 seconds...")
+            time.sleep(2)  # Wait for 2 seconds before retrying
+        elif len(output2[0]['generated_text']) > 1:
+            print(output2[0]['generated_text'])
+            print("Retrying in 2 seconds...")
+            time.sleep(2)  # Wait for 2 seconds before retrying
         else:
             print(output2[0]['generated_text'])
             break  # Exit the loop if successful
@@ -94,9 +111,20 @@ def get_response(text):
             return int(match.group())
         else:
             return None
-        
+    
+    # def replace_rating(input_str):
+    #     # Replace "Rating: 9" with "Rating: 0" in the given string
+    #     updated_str = input_str.replace("Rating: 9", "Rating: 0")
+    #     return updated_str
+
     rating = extract_rating(clean_text(rating))
     
-    print(rating)
+    # Replace the matching pattern with an empty string to remove it
+    x = re.sub(r"Rating: \d+\.", "", x)
+    
+    # if rating == 9:
+    #     x = replace_rating(x)
+    #     rating = 0
+    # print(rating)
     
     return x + "." + str(rating) + "."

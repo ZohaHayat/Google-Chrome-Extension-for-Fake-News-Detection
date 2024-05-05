@@ -9,7 +9,27 @@ function showPopupMessage(processedTex, rating, popupWindow) {
 
     // Create 5 sections, coloring the one representing the rating
     for (var i = 0; i < 5; i++) {
-        var sectionColor = i < rating ? '#f00' : '#ddd'; // Highlight with red if less than rating, otherwise light gray
+        // var sectionColor = i < rating ? '#f00' : '#ddd'; // Highlight with red if less than rating, otherwise light gray
+        var sectionColor;
+        if (rating === 1 && i == rating-1) {
+            sectionColor = '#006400'; // Dark green
+            rating = "Completely True"
+        } else if (rating === 2 && i == rating-1) {
+            sectionColor = '#90EE90'; // Light green
+            rating = "Somewhat True"
+        } else if (rating === 3 && i == rating-1) {
+            sectionColor = '#FFFF00'; // Yellow
+            rating = "Uncertain"
+        } else if (rating === 4 && i == rating-1) {
+            sectionColor = '#FFA500'; // Orange
+            rating = "Somewhat False"
+        } else if (rating === 5 && i == rating-1) {
+            rating = "Completely False"
+            sectionColor = '#FF0000'; // Red
+        } else {
+            sectionColor = '#808080'; // Default to white or any other fallback color
+        }
+
         popupContent += '<div style="flex: 1; background: ' + sectionColor + '; border-right: 1px solid white;"></div>';
     }
 
