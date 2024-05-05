@@ -49,20 +49,6 @@ def get_response(text):
         text = re.sub(r'\s+', ' ', text)
         return text.strip()
     
-    x = agent.invoke(prompt)
-    print(x)
-    
-    cleaned_data = remove_after(x['output'], '<|eot_id|>')
-    cleaned_data = clean_text(cleaned_data)
-    
-    prompt2 = f"Only extract and return the rating number given to the text: {x}. Just give me the number as an answer and don't write an entire sentence."
-    
-    rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
-    while (rating==None):
-        rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
-    
-    cleaned_data = re.sub(r"Rating: \d+\.", "", cleaned_data)
-    
     def extract_rating(sentence):
         pattern = r'\d+'
         match = re.search(pattern, sentence)
@@ -71,7 +57,26 @@ def get_response(text):
         else:
             return None
     
-    rating = extract_rating(rating)
+    rating = None
+    while rating == None:
+        x = agent.invoke(prompt)
+        print(x)
+        
+        cleaned_data = remove_after(x['output'], '<|eot_id|>')
+        cleaned_data = clean_text(cleaned_data)
+        
+        prompt2 = f"Only extract and return the rating number given to the text: {x}. Just give me the number as an answer and don't write an entire sentence."
+        
+        rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
+        rating = extract_rating(rating)
+        # while (rating==None):
+        #     rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
+        
+        cleaned_data = re.sub(r"Rating: \d+\.", "", cleaned_data)
+    
+
+    
+    # rating = extract_rating(rating)
         
     print(cleaned_data + "." + str(rating) + ".")
     return cleaned_data + "." + str(rating) + "."
