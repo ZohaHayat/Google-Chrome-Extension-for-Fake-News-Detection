@@ -18,7 +18,7 @@
   - Click on the "Load unpacked" button.
   - Select the manifest.json file from the chrome-extension directory within the downloaded repository.
   - Running the Backend
-  - Navigate to Backend Directory:
+  - Navigate to Backend Directory
   - Open a terminal or command prompt.
   - Change directory to the backend folder within the downloaded repository:
      cd backend
