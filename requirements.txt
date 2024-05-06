@@ -2,3 +2,13 @@ Flask==3.0.3
 langchain_fireworks
 duckduckgo-search
 langchain-community
+langchain-tools
+langchain-agents
+langchain-community-utilities
+langchain-hub
+datasets
+transformers==4.31.0
+trl==0.4.7
+peft==0.4.0
+bitsandbytes==0.40.2
+accelerate==0.21.0
