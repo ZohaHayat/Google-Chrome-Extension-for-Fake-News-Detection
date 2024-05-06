@@ -66,11 +66,11 @@ def get_response(text):
     prompt2 = f"Only extract and return the rating number given to the text: {x}. Just give me the number as an answer and don't write an entire sentence."
     
     rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
-    while (rating==None):
-        print("ERROR ERROR ERROR")
-        rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
+    # while (rating==None):
+    #     print("ERROR ERROR ERROR")
+    #     rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
     
-    print("OUT OF ERROR")
+    # print("OUT OF ERROR")
     rating = extract_rating(rating)
     
     print(rating)
