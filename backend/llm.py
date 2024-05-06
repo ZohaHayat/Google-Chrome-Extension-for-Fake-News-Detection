@@ -37,7 +37,7 @@ def get_response(text):
     )
 
     fact = fact_check_claim(text)
-    prompt = f"Here is a statement: {text}. Classify the statement as one of the following: True (the assigned rating should be 1.), Uncertain (the assigned rating should be 2.), or False (the assigned rating should be 3.). Provide factual explanations to prove your claim. Only assign the relevant rating to a particular classification. Here is some supplementary information about the statement: {fact}. The format for assigning rating should be the following: Rating: <rating_value>. The answer sequence should be: Classification, Explanation."
+    prompt = f"Here is a news statement: {text}. Classify the news statement as one of the following: True News (the assigned rating should be 1.), Uncertain News (the assigned rating should be 2.), or False News (the assigned rating should be 3.). Provide factual explanations to prove your claim. Only assign the relevant rating to a particular classification. If the news is fake, further classify it as misinformation, propaganda or misleading. Here is some supplementary information about the statement: {fact}. The format for assigning rating should be the following: Rating: <rating_value>. The answer sequence should be: Classification, Explanation."
 
     # removing tokens
     def remove_after(text, delimiter):
