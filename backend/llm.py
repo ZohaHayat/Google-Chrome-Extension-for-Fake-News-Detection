@@ -37,7 +37,7 @@ def get_response(text):
     )
 
     fact = fact_check_claim(text)
-    prompt = f"Here is a news statement: {text}. Classify the news statement as one of the following: True News (the assigned rating should be 1.), Uncertain News (the assigned rating should be 2.), or False News (the assigned rating should be 3.). Provide factual explanations to prove your claim. Only assign the relevant rating to a particular classification. If the news is fake, further classify it as misinformation, propaganda or misleading. Here is some supplementary information about the statement: {fact}. The format for assigning rating should be the following: Rating: <rating_value>. The answer sequence should be: Classification, Explanation."
+    prompt = f"Here is a news statement: {text}. Classify the news statement as one of the following: True News (the assigned rating should be 1.), Uncertain News (the assigned rating should be 2.), or False News (the assigned rating should be 3.). Provide factual explanations to prove your claim. If the news is false, further classify it as misinformation, propaganda or misleading. Only assign the relevant rating to a particular classification. Here is some supplementary information about the statement: {fact}. The format for assigning rating should be the following: Rating: <rating_value>. The answer sequence should be: Classification, Explanation."
 
     # removing tokens
     def remove_after(text, delimiter):
@@ -56,27 +56,26 @@ def get_response(text):
             return int(match.group())
         else:
             return None
+        
+    x = agent.invoke(prompt)
+    print(x)
     
-    rating = None
-    while rating == None:
-        x = agent.invoke(prompt)
-        print(x)
-        
-        cleaned_data = remove_after(x['output'], '<|eot_id|>')
-        cleaned_data = clean_text(cleaned_data)
-        
-        prompt2 = f"Only extract and return the rating number given to the text: {x}. Just give me the number as an answer and don't write an entire sentence."
-        
+    cleaned_data = remove_after(x['output'], '<|eot_id|>')
+    cleaned_data = clean_text(cleaned_data)
+    
+    prompt2 = f"Only extract and return the rating number given to the text: {x}. Just give me the number as an answer and don't write an entire sentence."
+    
+    rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
+    while (rating==None):
+        print("ERROR ERROR ERROR")
         rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
-        rating = extract_rating(rating)
-        # while (rating==None):
-        #     rating = clean_text(remove_after((agent.invoke(prompt2))['output'], '<|eot_id|>'))
-        
-        cleaned_data = re.sub(r"Rating: \d+\.", "", cleaned_data)
     
-
+    print("OUT OF ERROR")
+    rating = extract_rating(rating)
     
-    # rating = extract_rating(rating)
+    print(rating)
+    
+    cleaned_data = re.sub(r"Rating: \d+\.", "", cleaned_data)
         
     print(cleaned_data + "." + str(rating) + ".")
     return cleaned_data + "." + str(rating) + "."
