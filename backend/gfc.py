@@ -1,7 +1,7 @@
 import requests
 
 def fact_check_claim(claim_text):
-    api_key = "AIzaSyBw8_74nT9ofhHfzSaHNKAakbiGqr5G-oU"  # Replace with your Google Fact Check API key
+    api_key = "GOOGLE_API_KEY"  # Replace with your Google Fact Check API key
     url = f"https://factchecktools.googleapis.com/v1alpha1/claims:search?key={api_key}"
     params = {
         "query": claim_text
