@@ -9,8 +9,8 @@ from langchain.agents import AgentExecutor, create_react_agent
 from langchain import hub
 import re
 
-os.environ["FIREWORKS_API_KEY"] = "6O0DLhmko5snHGNppXDZB5FuK5ygtrviQXQIUHzGqMvWxKbj"
-os.environ["SERPER_API_KEY"] = "71dec5a8911e77cf4b02622b06f25e2d3661f1f9"
+os.environ["FIREWORKS_API_KEY"] = "FIREWORKS_API_KEY"
+os.environ["SERPER_API_KEY"] = "SERPER_API_KEY"
 
 def get_response(text):
     
